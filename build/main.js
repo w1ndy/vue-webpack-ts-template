@@ -82,9 +82,11 @@ switch (process.argv[2]) {
   case 'build':
     require('./Builder.ts')
     break
+  case 'prod':
+    process.env.NODE_ENV = 'production'
   case 'serve':
     require('./Server.ts')
     break
   default:
-    console.log('node build/main.js serve|build')
+    console.log('node build/main.js serve|build|prod')
 }
