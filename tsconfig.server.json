@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "./built/",
+    "sourceMap": true,
+    "strict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
