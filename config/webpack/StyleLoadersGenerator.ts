@@ -4,7 +4,7 @@ import generateCSSLoaders, { CSSLoadersGeneratorOptions } from './CSSLoadersGene
 
 interface StyleLoader {
   test: RegExp,
-  use: Loader[]
+  use: Loader | Loader[]
 }
 
 export default function (options: CSSLoadersGeneratorOptions)
