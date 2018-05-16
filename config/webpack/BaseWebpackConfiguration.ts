@@ -1,8 +1,11 @@
 import * as path from 'path'
 
 import { Configuration } from 'webpack'
+import { VueLoaderPlugin } from 'vue-loader/lib'
+import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 
 import config from '../ApplicationConfiguration'
+import generateStyleLoaders from './StyleLoadersGenerator'
 import generateCSSLoaders from './CSSLoadersGenerator'
 
 // const path = require('path')
@@ -27,17 +30,6 @@ export function normalizeNodeEnv (): 'production' | 'development' | 'none' {
     default: return 'none'
   }
 }
-
-// const createLintingRule = () => ({
-//   test: /\.(js|vue)$/,
-//   loader: 'eslint-loader',
-//   enforce: 'pre',
-//   include: [resolve('src'), resolve('test')],
-//   options: {
-//     formatter: require('eslint-friendly-formatter'),
-//     emitWarning: !config.dev.showEslintErrorsInOverlay
-//   }
-// })
 
 const isProduction = process.env.NODE_ENV === 'production'
 const sourceMapEnabled = isProduction
@@ -66,15 +58,14 @@ const baseConfig: Configuration = {
   },
   module: {
     rules: [
-      // ...(config.dev.useEslint ? [createLintingRule()] : []),
+      ...generateStyleLoaders({
+        sourceMap: sourceMapEnabled,
+        extract: isProduction
+      }),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-          loaders: generateCSSLoaders({
-            sourceMap: sourceMapEnabled,
-            extract: isProduction
-          }),
           cssSourceMap: sourceMapEnabled,
           cacheBusting: config.dev.cacheBusting,
           transformToRequire: {
@@ -139,7 +130,10 @@ const baseConfig: Configuration = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  }
+  },
+  plugins: [
+    new VueLoaderPlugin()
+  ]
 }
 
 export default baseConfig
