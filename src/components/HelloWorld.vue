@@ -84,10 +84,12 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator"
+import { Vue, Component } from "vue-property-decorator"
 
 @Component
-export default class HelloWorld extends Vue {}
+export default class HelloWorld extends Vue {
+  msg = 'Hello from vue-webpack-ts-template!'
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

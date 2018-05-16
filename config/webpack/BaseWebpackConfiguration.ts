@@ -56,6 +56,9 @@ const baseConfig: Configuration = {
       '@': resolve('src'),
     }
   },
+  devServer: {
+    historyApiFallback: true
+  },
   module: {
     rules: [
       ...generateStyleLoaders({
