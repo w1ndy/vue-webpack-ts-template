@@ -7,8 +7,8 @@
 This template features:
 
 * [x] Pure TypeScript
+* [x] Typed and RESTful API with Express
 * [x] Webpack
-* [x] Express
 * [x] Vue.js
 * [x] Vuex (partial typing support)
 

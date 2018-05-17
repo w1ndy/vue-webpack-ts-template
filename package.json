@@ -13,6 +13,8 @@
     "watch": [
       "build/**/*",
       "config/**/*",
+      "src/server/**/*",
+      "src/typings/api/**/*",
       "tsconfig.server.json",
       "tslint.json",
       ".postcssrc.js",
@@ -55,6 +57,7 @@
     "typescript": "^2.8.3",
     "vue": "^2.5.16",
     "vue-property-decorator": "^6.0.0",
+    "vue-resource": "https://github.com/pagekit/vue-resource.git#develop",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-class": "^0.3.1",

@@ -13,7 +13,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware'
 
 import config, { Host, Port, URI } from '../config/ApplicationConfiguration'
 import webpackConfig from '../config/webpack/DevelopmentWebpackConfiguration'
-import { create } from 'domain';
+import APIServer from '../src/server'
 
 const app = (function initializeExpress () {
   const app = express()
@@ -28,6 +28,7 @@ const app = (function initializeExpress () {
     secret: config.server.session.secret,
     maxAge: config.server.session.maxAge
   }))
+  app.use('/api', APIServer)
   app.use(connectHistoryAPIFallback())
   return app
 })()
