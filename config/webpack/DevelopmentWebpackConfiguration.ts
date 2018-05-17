@@ -49,7 +49,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     })
   },
   entry: {
-    app: ['webpack-hot-middleware/client?noInfo=true&reload=true', './src/main.ts']
+    app: ['./build/client-polyfill.js', './src/main.ts']
   },
   // cheap-module-eval-source-map is faster for development
   devtool: config.dev.devtool,
