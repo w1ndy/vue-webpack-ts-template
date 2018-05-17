@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <h1>{{ welcomeMessage }}</h1>
     <h2>Essential Links</h2>
     <ul>
       <li>
@@ -85,10 +85,18 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
+import { Getter, Action, namespace } from 'vuex-class'
+
+const ExampleStore = namespace('Example')
 
 @Component
 export default class HelloWorld extends Vue {
-  msg = 'Hello from vue-webpack-ts-template!'
+  @ExampleStore.Getter welcomeMessage!: string
+  @ExampleStore.Action setWelcomeMessage!: (msg: string) => void
+
+  public mounted () {
+    this.setWelcomeMessage('Hello from vue-webpack-ts-template!')
+  }
 }
 </script>
 

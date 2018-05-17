@@ -10,6 +10,7 @@ This template features:
 * [x] Webpack
 * [x] Express
 * [x] Vue.js
+* [x] Vuex (partial typing support)
 
 ## Usage
 
