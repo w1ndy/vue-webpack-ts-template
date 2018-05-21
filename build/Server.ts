@@ -14,6 +14,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware'
 import config, { Host, Port, URI } from '../config/ApplicationConfiguration'
 import webpackConfig from '../config/webpack/DevelopmentWebpackConfiguration'
 import APIServer from '../src/server'
+import { AsyncSeriesHook } from 'webpack/node_modules/@types/tapable';
 
 const app = (function initializeExpress () {
   const app = express()
@@ -50,13 +51,20 @@ if (process.env.NODE_ENV !== 'production') {
     })
 
     // force page reload when html-webpack-plugin template changes
-    compiler.plugin('compilation', (compilation: webpack.Compiler) => {
-      compilation.plugin('html-webpack-plugin-after-emit',
-        (data: any, cb: () => void) => {
-          hotMiddleware.publish({ action: 'reload' })
-          cb()
-        })
-    })
+    compiler.hooks.compilation.tap(
+      'webpackReloadAfterTemplateChanged',
+      compilation => {
+        ((compilation.hooks as any).htmlWebpackPluginAfterEmit as AsyncSeriesHook<any, () => void>)
+        .tapAsync(
+          'reloadAfterTemplateChanged',
+          (data, cb) => {
+            console.log('Reloading html template...')
+            hotMiddleware.publish({ action: 'reload' })
+            cb()
+          }
+        )
+      }
+    )
 
     // serve webpack bundle output
     app.use(devMiddleware)
