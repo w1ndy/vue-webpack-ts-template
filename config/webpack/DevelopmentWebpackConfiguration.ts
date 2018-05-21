@@ -33,9 +33,18 @@ function createNotifierCallback() {
     const error = (<any>errors[0] as WebpackError)
     const filename = error.file && error.file.split('!').pop()
 
+    const ColorCodes = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g
+    const cleanMessage = error.message.replace(ColorCodes, '')
+    const match = cleanMessage.match(/^\s+(.*)$/m)
+    const message = match ? match[1] : cleanMessage
+
+    const severityTitle = severity.toString()[0].toUpperCase() + severity.toString().slice(1)
+    const filenameTitle = filename ? ` @ ${filename.replace(path.resolve('.'), '')}` : undefined
+    const title = `${severityTitle}${filenameTitle}`
+
     notifier.notify({
-      title: filename || '',
-      message: severity + ': ' + error.name,
+      title,
+      message,
       icon: path.join(__dirname, '../logo.png')
     })
   }
