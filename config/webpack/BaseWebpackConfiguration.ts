@@ -1,6 +1,7 @@
 import * as path from 'path'
 
 // tslint:disable-next-line:no-submodule-imports
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import { VueLoaderPlugin } from 'vue-loader/lib'
 import { Configuration } from 'webpack'
 
@@ -132,6 +133,11 @@ export const baseWebpackConfiguration: Configuration = {
     child_process: 'empty'
   },
   plugins: [
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      tslint: true,
+      vue: true
+    })
   ]
 }

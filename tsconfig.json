@@ -13,7 +13,8 @@
     "noImplicitAny": true
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*.ts",
+    "./src/**/*.vue"
   ],
   "exclude": [
     "node_modules"

@@ -87,7 +87,7 @@
 import { Vue, Component } from "vue-property-decorator"
 import { Getter, Action, namespace } from 'vuex-class'
 
-const ExampleStore = namespace('Example')
+const ExampleStore = namespace('Example');
 
 @Component
 export default class HelloWorld extends Vue {
