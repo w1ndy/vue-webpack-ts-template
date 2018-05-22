@@ -1,8 +1,6 @@
-import { VuexGetters } from 'vuex'
+import { IGetterHandlers } from 'vuex'
 import { IExampleStoreState } from './State'
 
-const getters: VuexGetters<IExampleStoreState> = {
-  welcomeMessage: state => state.message
+export const getters: IGetterHandlers<IExampleStoreState> = {
+  welcomeMessage: (state: IExampleStoreState): string => state.message
 }
-
-export default getters

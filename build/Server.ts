@@ -1,51 +1,56 @@
 import * as path from 'path'
 
-import express from 'express'
+import express, { Express, Handler } from 'express'
+
 import bodyParser from 'body-parser'
 import compression from 'compression'
-import morgan from 'morgan'
-import cookieSession from 'cookie-session'
 import connectHistoryAPIFallback from 'connect-history-api-fallback'
+import cookieSession from 'cookie-session'
+import morgan from 'morgan'
 
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
+import webpack, { compilation, Compiler } from 'webpack'
+import webpackDevMiddleware, { WebpackDevMiddleware } from 'webpack-dev-middleware'
+import webpackHotMiddleware, { EventStream } from 'webpack-hot-middleware'
 
-import config, { Host, Port, URI } from '../config/ApplicationConfiguration'
-import webpackConfig from '../config/webpack/DevelopmentWebpackConfiguration'
-import APIServer from '../src/server'
-import { AsyncSeriesHook } from 'webpack/node_modules/@types/tapable';
+// tslint:disable-next-line:no-submodule-imports
+import { AsyncSeriesHook } from 'webpack/node_modules/@types/tapable'
 
-const app = (function initializeExpress () {
-  const app = express()
-  if (config.server.logStyle) {
-    app.use(morgan(config.server.logStyle))
+import { APPLICATION_CONFIGURATION, HOST, PORT, URI } from '../config/ApplicationConfiguration'
+import { developmentWebpackConfiguration } from '../config/webpack/DevelopmentWebpackConfiguration'
+
+import { serverRouter } from '../src/server'
+
+const app: Express = ((): Express => {
+  const expressApp: Express = express()
+  if (APPLICATION_CONFIGURATION.server.logStyle) {
+    expressApp.use(morgan(APPLICATION_CONFIGURATION.server.logStyle))
   }
-  app.use(compression())
-  app.use(bodyParser.json({ limit: '20mb' }));
-  app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }))
-  app.use(cookieSession({
+  expressApp.use(compression())
+  expressApp.use(bodyParser.json({ limit: '20mb' }));
+  expressApp.use(bodyParser.urlencoded({ limit: '20mb', extended: true }))
+  expressApp.use(cookieSession({
     name: 'session',
-    secret: config.server.session.secret,
-    maxAge: config.server.session.maxAge
+    secret: APPLICATION_CONFIGURATION.server.session.secret,
+    maxAge: APPLICATION_CONFIGURATION.server.session.maxAge
   }))
-  app.use('/api', APIServer)
-  app.use(connectHistoryAPIFallback())
-  return app
+  expressApp.use('/api', serverRouter)
+  expressApp.use(connectHistoryAPIFallback())
+
+  return expressApp
 })()
 
 if (process.env.NODE_ENV !== 'production') {
-  (function initializeWebpack() {
-    const compiler = webpack(webpackConfig)
-    const publicPath =
-      (webpackConfig.output && webpackConfig.output.publicPath) ||
+  ((): void => {
+    const compiler: Compiler = webpack(developmentWebpackConfiguration)
+    const publicPath: string =
+      (developmentWebpackConfiguration.output && developmentWebpackConfiguration.output.publicPath) ||
       '/'
 
-    const devMiddleware = webpackDevMiddleware(compiler, {
+    const devMiddleware: WebpackDevMiddleware & Handler = webpackDevMiddleware(compiler, {
       publicPath,
       logLevel: 'silent'
     })
-    const hotMiddleware = webpackHotMiddleware(compiler, {
+    const hotMiddleware: EventStream & Handler = webpackHotMiddleware(compiler, {
       log: false,
       heartbeat: 2000
     })
@@ -53,11 +58,13 @@ if (process.env.NODE_ENV !== 'production') {
     // force page reload when html-webpack-plugin template changes
     compiler.hooks.compilation.tap(
       'webpackReloadAfterTemplateChanged',
-      compilation => {
-        ((compilation.hooks as any).htmlWebpackPluginAfterEmit as AsyncSeriesHook<any, () => void>)
+      (compInst: compilation.Compilation) => {
+        // tslint:disable-next-line:no-any
+        (<AsyncSeriesHook<any, () => void>>(<any>compInst.hooks).htmlWebpackPluginAfterEmit)
         .tapAsync(
           'reloadAfterTemplateChanged',
-          (data, cb) => {
+          // tslint:disable-next-line:no-any
+          (data: any, cb: () => void) => {
             console.log('Reloading html template...')
             hotMiddleware.publish({ action: 'reload' })
             cb()
@@ -74,111 +81,14 @@ if (process.env.NODE_ENV !== 'production') {
   })()
 
   // serve pure static assets
-  const staticPath = path.posix.join(
-    config.dev.assetsPublicPath,
-    config.dev.assetsSubDirectory)
+  const staticPath: string = path.posix.join(
+    APPLICATION_CONFIGURATION.dev.assetsPublicPath,
+    APPLICATION_CONFIGURATION.dev.assetsSubDirectory)
   app.use(staticPath, express.static('./static'))
 } else {
   app.use('/', express.static('./dist'))
   console.log('> Starting prod server...')
-  console.log('> Listening at ' + URI + '\n')
+  console.log(`> Listening at ${URI}\n`)
 }
 
-app.listen(Port, Host)
-
-
-// const api = require('../src/server')
-// app.use('/api', api)
-
-
-// if (process.env.NODE_ENV !== 'production') {
-//   var devMiddleware = require('webpack-dev-middleware')(compiler, {
-//     publicPath: webpackConfig.output.publicPath,
-//     quiet: true
-//   })
-
-//   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-//     log: false,
-//     heartbeat: 2000
-//   })
-//   // force page reload when html-webpack-plugin template changes
-//   compiler.plugin('compilation', function (compilation) {
-//     compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-//       hotMiddleware.publish({ action: 'reload' })
-//       cb()
-//     })
-//   })
-
-//   // proxy api requests
-//   Object.keys(proxyTable).forEach(function (context) {
-//     var options = proxyTable[context]
-//     if (typeof options === 'string') {
-//       options = { target: options }
-//     }
-//     app.use(proxyMiddleware(options.filter || context, options))
-//   })
-
-//   // serve webpack bundle output
-//   app.use(devMiddleware)
-
-//   // enable hot-reload and state-preserving
-//   // compilation error display
-//   app.use(hotMiddleware)
-
-//   // serve pure static assets
-//   var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-//   app.use(staticPath, express.static('./static'))
-// } else {
-//   app.use('/', express.static('./dist'))
-// }
-
-// // deal with errors
-// app.use(function (err, req, res, next) {
-//   if (res.headersSent) {
-//     return next(err)
-//   }
-
-//   if (err.code === 'LIMIT_FILE_SIZE') {
-//     res.json({ code: StatusCode.E_FILE_TOO_LARGE })
-//     return
-//   }
-//   if (err.code === 'ERROR_NOT_LOGIN') {
-//     res.json({ code: StatusCode.E_NOT_LOGIN })
-//     return
-//   }
-
-//   console.log(err)
-//   res.json({ code: StatusCode.E_UNKNOWN })
-// })
-
-// var uri = `http://${host}:${port}`
-
-// var _resolve
-// readyPromise = new Promise(resolve => {
-//   _resolve = resolve
-// })
-
-// if (process.env.NODE_ENV !== 'production') {
-//   console.log('> Starting dev server...')
-//   devMiddleware.waitUntilValid(() => {
-//     console.log('> Listening at ' + uri + '\n')
-//     // when env is testing, don't need open it
-//     if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-//       opn(uri)
-//     }
-//     _resolve()
-//   })
-// } else {
-//   console.log('> Starting prod server...')
-//   console.log('> Listening at ' + uri + '\n')
-//   _resolve()
-// }
-
-// server = app.listen(port, host)
-
-// module.exports = {
-//   ready: readyPromise,
-//   close: () => {
-//     server.close()
-//   }
-// }
+app.listen(PORT, HOST)

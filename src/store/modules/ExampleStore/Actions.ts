@@ -1,20 +1,20 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
-import { VuexActions } from 'vuex'
+import { IActionContext, IActionHandlers } from 'vuex'
 
+// tslint:disable-next-line:no-implicit-dependencies
 import API from 'api'
 
+import { MUTATIONS } from './MutationTypes'
 import { IExampleStoreState } from './State'
-import Mutations from './MutationTypes'
 
-const actions: VuexActions<IExampleStoreState> = {
-  async setWelcomeMessage({ commit }, message: string) {
-    const resp = await Vue.http.post('/api/welcome',{
+export const actions: IActionHandlers<IExampleStoreState> = {
+  async setWelcomeMessage(ctx: IActionContext<IExampleStoreState>, message: string): Promise<void> {
+    const req: API.Welcome.Request = {
       name: 'vue-webpack-ts-template'
-    } as API.Welcome.Request)
-    const body = (await resp.json()) as API.Welcome.Response
-    commit(Mutations.SET_MESSAGE, (await resp.json()).message)
+    }
+    const resp: VueResource.HttpResponse = await Vue.http.post('/api/welcome', req)
+    const body: API.Welcome.Response = await resp.json()
+    ctx.commit(MUTATIONS.SET_MESSAGE, body.message)
   }
 }
-
-export default actions

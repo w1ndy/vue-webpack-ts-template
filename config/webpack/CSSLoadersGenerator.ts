@@ -1,17 +1,15 @@
 import * as path from 'path'
 
+import miniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Loader } from 'webpack'
-import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 
-import config from '../ApplicationConfiguration'
-
-export interface CSSLoadersGeneratorOptions {
+export interface ICSSLoadersGeneratorOptions {
   extract?: boolean,
   sourceMap?: boolean,
   usePostCSS?: boolean
 }
 
-interface CSSLoaders {
+export interface ICSSLoaders {
   css: Loader | Loader[],
   postcss: Loader | Loader[],
   less: Loader | Loader[],
@@ -22,17 +20,15 @@ interface CSSLoaders {
   [key: string]: Loader | Loader[]
 }
 
-export default function (options: CSSLoadersGeneratorOptions): CSSLoaders {
-  options = options || {}
-
-  const cssLoader = {
+export function generateCSSLoaders(options: ICSSLoadersGeneratorOptions): ICSSLoaders {
+  const cssLoader: Loader = {
     loader: 'css-loader',
     options: {
       sourceMap: options.sourceMap
     }
   }
 
-  const postcssLoader = {
+  const postcssLoader: Loader = {
     loader: 'postcss-loader',
     options: {
       sourceMap: options.sourceMap
@@ -48,21 +44,20 @@ export default function (options: CSSLoadersGeneratorOptions): CSSLoaders {
 
     if (loader) {
       loaders.push({
-        loader: loader + '-loader',
-        options: Object.assign({}, loaderOptions, {
+        loader: `${loader}-loader`,
+        options: {
+          ...loaderOptions,
           sourceMap: options.sourceMap
-        })
+        }
       })
     }
 
-    // TODO: ExtractTextPlugin is unsupported in Webpack 4
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
-      return MiniCSSExtractPlugin.loader
+      return miniCssExtractPlugin.loader
     } else {
-      const styleLoader: Loader[] = ['vue-style-loader']
-      return styleLoader.concat(loaders)
+      return (<Loader[]>['vue-style-loader']).concat(loaders)
     }
   }
 

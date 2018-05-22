@@ -1,5 +1,4 @@
-const env: { [key: string]: string } = {
-  NODE_ENV: "'production'"
+/* tslint:disable:export-name */
+export const PRODUCTION_ENVIRONMENT: { [key: string]: string } = {
+  NODE_ENV: '\'production\''
 }
-
-export default env

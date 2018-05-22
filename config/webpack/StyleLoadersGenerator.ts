@@ -1,22 +1,21 @@
 import { Loader } from 'webpack'
 
-import generateCSSLoaders, { CSSLoadersGeneratorOptions } from './CSSLoadersGenerator'
+import { generateCSSLoaders, ICSSLoaders, ICSSLoadersGeneratorOptions } from './CSSLoadersGenerator'
 
-interface StyleLoader {
+interface IStyleLoader {
   test: RegExp,
   use: Loader | Loader[]
 }
 
-export default function (options: CSSLoadersGeneratorOptions)
-    : Array<StyleLoader> {
-  const output: Array<StyleLoader> = []
-  const loaders = generateCSSLoaders(options)
+/* tslint:disable:export-name */
+export function generateStyleLoaders(options: ICSSLoadersGeneratorOptions): IStyleLoader[] {
+  const output: IStyleLoader[] = []
+  const loaders: ICSSLoaders = generateCSSLoaders(options)
 
-  for (const extension in loaders) {
-    const loader = loaders[extension]
+  for (const extension of Object.keys(loaders)) {
     output.push({
-      test: new RegExp('\\.' + extension + '$'),
-      use: loader
+      test: new RegExp(`\\.${extension}$`),
+      use: loaders[extension]
     })
   }
 

@@ -1,28 +1,25 @@
 import * as path from 'path'
 
-import { Configuration } from 'webpack'
+// tslint:disable-next-line:no-submodule-imports
 import { VueLoaderPlugin } from 'vue-loader/lib'
-import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
+import { Configuration } from 'webpack'
 
-import config from '../ApplicationConfiguration'
-import generateStyleLoaders from './StyleLoadersGenerator'
-import generateCSSLoaders from './CSSLoadersGenerator'
+import { APPLICATION_CONFIGURATION } from '../ApplicationConfiguration'
+import { generateCSSLoaders } from './CSSLoadersGenerator'
+import { generateStyleLoaders } from './StyleLoadersGenerator'
 
-// const path = require('path')
-// const utils = require('./utils')
-// const config = require('../config')
-// const vueLoaderConfig = require('./vue-loader.conf')
-
-export function resolve (dir: string) {
+export function resolve(dir: string): string {
   return path.join(__dirname, '../..', dir)
 }
-export function resolveAssetsPath (_path: string) {
-  const assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? config.build.assetsSubDirectory
-    : config.dev.assetsSubDirectory
 
-  return path.posix.join(assetsSubDirectory, _path)
+export function resolveAssetsPath (assetPath: string): string {
+  const assetsSubDirectory: string = process.env.NODE_ENV === 'production'
+    ? APPLICATION_CONFIGURATION.build.assetsSubDirectory
+    : APPLICATION_CONFIGURATION.dev.assetsSubDirectory
+
+  return path.posix.join(assetsSubDirectory, assetPath)
 }
+
 export function normalizeNodeEnv (): 'production' | 'development' | 'none' {
   switch (process.env.NODE_ENV) {
     case 'production': return 'production'
@@ -31,29 +28,29 @@ export function normalizeNodeEnv (): 'production' | 'development' | 'none' {
   }
 }
 
-const isProduction = process.env.NODE_ENV === 'production'
-const sourceMapEnabled = isProduction
-  ? config.build.productionSourceMap
-  : config.dev.cssSourceMap
+const isProduction: boolean = process.env.NODE_ENV === 'production'
+const sourceMapEnabled: boolean = isProduction
+  ? APPLICATION_CONFIGURATION.build.productionSourceMap
+  : APPLICATION_CONFIGURATION.dev.cssSourceMap
 
-const baseConfig: Configuration = {
+export const baseWebpackConfiguration: Configuration = {
   mode: normalizeNodeEnv(),
   context: path.resolve(__dirname, '../../'),
   entry: {
     app: './src/main.ts'
   },
   output: {
-    path: config.build.assetsRoot,
+    path: APPLICATION_CONFIGURATION.build.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+      ? APPLICATION_CONFIGURATION.build.assetsPublicPath
+      : APPLICATION_CONFIGURATION.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      vue$: 'vue/dist/vue.esm.js',
+      '@': resolve('src')
     }
   },
   devServer: {
@@ -70,7 +67,7 @@ const baseConfig: Configuration = {
         loader: 'vue-loader',
         options: {
           cssSourceMap: sourceMapEnabled,
-          cacheBusting: config.dev.cacheBusting,
+          cacheBusting: APPLICATION_CONFIGURATION.dev.cacheBusting,
           transformToRequire: {
             video: ['src', 'poster'],
             source: 'src',
@@ -84,7 +81,7 @@ const baseConfig: Configuration = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          appendTsSuffixTo: [/\.vue$/],
+          appendTsSuffixTo: [/\.vue$/]
         }
       },
       {
@@ -138,5 +135,3 @@ const baseConfig: Configuration = {
     new VueLoaderPlugin()
   ]
 }
-
-export default baseConfig

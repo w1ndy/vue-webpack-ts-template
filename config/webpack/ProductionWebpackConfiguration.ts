@@ -1,60 +1,63 @@
 import * as path from 'path'
 
-import webpack from 'webpack'
-import merge from 'webpack-merge'
+import webpack, { Configuration } from 'webpack'
+import webpackMerge from 'webpack-merge'
+
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
-import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
-import BundleAnalyzer from 'webpack-bundle-analyzer'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import OptimizeCssAssetsWebpackPlugin from 'optimize-css-assets-webpack-plugin'
+import UglifyJsWebpackPlugin from 'uglifyjs-webpack-plugin'
+import webpackBundleAnalyzer, { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
-import config from '../ApplicationConfiguration'
-import baseWebpackConfig, { resolveAssetsPath } from './BaseWebpackConfiguration'
-import prodEnv from '../env/ProductionEnvironment'
-import generateStyleLoaders from './StyleLoadersGenerator'
+import { APPLICATION_CONFIGURATION } from '../ApplicationConfiguration'
+import { PRODUCTION_ENVIRONMENT } from '../env/ProductionEnvironment'
 
-const webpackConfig = merge(baseWebpackConfig, {
+import { baseWebpackConfiguration, resolveAssetsPath } from './BaseWebpackConfiguration'
+import { generateStyleLoaders } from './StyleLoadersGenerator'
+
+// tslint:disable-next-line:export-name
+export const productionWebpackConfiguration: Configuration = webpackMerge(baseWebpackConfiguration, {
   mode: 'production',
   module: {
     rules: generateStyleLoaders({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: APPLICATION_CONFIGURATION.build.productionSourceMap,
       extract: true,
       usePostCSS: true
     })
   },
-  devtool: config.build.devtool,
+  devtool: APPLICATION_CONFIGURATION.build.devtool,
   output: {
-    path: config.build.assetsRoot,
+    path: APPLICATION_CONFIGURATION.build.assetsRoot,
     filename: resolveAssetsPath('js/[name].[chunkhash].js'),
     chunkFilename: resolveAssetsPath('js/[id].[chunkhash].js')
   },
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
+      new UglifyJsWebpackPlugin({
         uglifyOptions: {
           compress: {
             warnings: false
           }
         },
-        sourceMap: config.build.productionSourceMap,
+        sourceMap: APPLICATION_CONFIGURATION.build.productionSourceMap,
         parallel: true
       }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: config.build.productionSourceMap
+      new OptimizeCssAssetsWebpackPlugin({
+        cssProcessorOptions: APPLICATION_CONFIGURATION.build.productionSourceMap
           ? { safe: true, map: { inline: false } }
           : { safe: true }
-      }),
+      })
     ]
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
-      'process.env': prodEnv
+      'process.env': PRODUCTION_ENVIRONMENT
     }),
 
     // extract css into its own file
-    new MiniCSSExtractPlugin({
+    new MiniCssExtractPlugin({
       filename: resolveAssetsPath('css/[name].[contenthash].css')
     }),
 
@@ -62,7 +65,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: config.build.index,
+      filename: APPLICATION_CONFIGURATION.build.index,
       template: 'index.html',
       inject: true,
       minify: {
@@ -83,18 +86,15 @@ const webpackConfig = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../../static'),
-        to: config.build.assetsSubDirectory,
+        to: APPLICATION_CONFIGURATION.build.assetsSubDirectory,
         ignore: ['.*']
       }
     ])
   ]
 })
 
-if (config.build.bundleAnalyzerReport) {
-  const BundleAnalyzerPlugin = BundleAnalyzer.BundleAnalyzerPlugin
-  if (webpackConfig && webpackConfig.plugins) {
-    webpackConfig.plugins.push(new BundleAnalyzerPlugin())
+if (APPLICATION_CONFIGURATION.build.bundleAnalyzerReport) {
+  if (productionWebpackConfiguration && productionWebpackConfiguration.plugins) {
+    productionWebpackConfiguration.plugins.push(new (webpackBundleAnalyzer.BundleAnalyzerPlugin)())
   }
 }
-
-export default webpackConfig

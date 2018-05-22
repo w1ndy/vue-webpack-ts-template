@@ -1,14 +1,16 @@
-import express from 'express'
-const router = express.Router()
+import express, { Request, Response, Router } from 'express'
 
+// tslint:disable-next-line:export-name
+export const serverRouter: Router = express.Router()
+
+// tslint:disable-next-line:no-implicit-dependencies
 import API from 'api'
 
-router.post('/welcome', (req, res) => {
-  const request = req.body as API.Welcome.Request
-
-  res.json({
+serverRouter.post('/welcome', (req: Request, res: Response) => {
+  const request: API.Welcome.Request = <API.Welcome.Request>req.body
+  const response: API.Welcome.Response = {
     message: `Hello from ${request.name}`
-  } as API.Welcome.Response)
-})
+  }
 
-export default router
+  res.json(response)
+})

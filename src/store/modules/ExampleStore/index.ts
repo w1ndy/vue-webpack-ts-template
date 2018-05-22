@@ -1,16 +1,15 @@
-import Vuex, { VuexStore } from 'vuex'
+import { IModule } from 'vuex'
 
-import state, { IExampleStoreState } from './State'
-import getters from './Getters'
-import mutations from './Mutations'
-import actions from './Actions'
+import { actions } from './Actions'
+import { getters } from './Getters'
+import { mutations } from './Mutations'
+import { IExampleStoreState, state } from './State'
 
-const store: VuexStore<IExampleStoreState> = {
+// tslint:disable:variable-name
+export const Example: IModule<IExampleStoreState> = {
   namespaced: true,
   state,
   getters,
   mutations,
   actions
 }
-
-export default store

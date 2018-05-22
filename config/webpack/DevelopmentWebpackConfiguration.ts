@@ -2,47 +2,40 @@
 // const utils = require('./utils')
 import * as path from 'path'
 
-import portfinder from 'portfinder'
-import notifier from 'node-notifier'
-import webpack from 'webpack'
-import merge from 'webpack-merge'
+import nodeNotifier from 'node-notifier'
+import webpack, { Configuration } from 'webpack'
+import webpackMerge from 'webpack-merge'
 
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import FriendlyErrorsWebpackPlugin, { Severity, WebpackError } from 'friendly-errors-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import FriendlyErrorsPlugin, { Severity, WebpackError } from 'friendly-errors-webpack-plugin'
 
-import config, { URI } from '../ApplicationConfiguration'
-import baseWebpackConfig from './BaseWebpackConfiguration'
-import generateStyleLoaders from './StyleLoadersGenerator'
-import devEnv from '../env/DevelopmentEnvironment'
+import { APPLICATION_CONFIGURATION, URI } from '../ApplicationConfiguration'
+import { DEVELOPMENT_ENVIRONMENT } from '../env/DevelopmentEnvironment'
 
-// const webpack = require('webpack')
-// const config = require('../config')
-// const merge = require('webpack-merge')
-// const path = require('path')
-// const baseWebpackConfig = require('./webpack.base.conf')
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-// const portfinder = require('portfinder')
+import { baseWebpackConfiguration } from './BaseWebpackConfiguration'
+import { generateStyleLoaders } from './StyleLoadersGenerator'
 
-function createNotifierCallback() {
-  return (severity: Severity, errors: string) => {
-    if (severity !== 'error') return
+function createNotifierCallback(): (severity: Severity, errors: string) => void {
+  return (severity: Severity, errors: string): void => {
+    if (severity !== 'error') {
+      return
+    }
 
-    const error = (<any>errors[0] as WebpackError)
-    const filename = error.file && error.file.split('!').pop()
+    // tslint:disable-next-line:no-any
+    const error: WebpackError = (<any>errors[0])
+    const filename: string | undefined = error.file && error.file.split('!').pop()
 
-    const ColorCodes = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g
-    const cleanMessage = error.message.replace(ColorCodes, '')
-    const match = cleanMessage.match(/^\s+(.*)$/m)
-    const message = match ? match[1] : cleanMessage
+    const COLOR_CODES_REGEX: RegExp = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g
+    const cleanMessage: string = error.message.replace(COLOR_CODES_REGEX, '')
+    const match: RegExpMatchArray | null = cleanMessage.match(/^\s+(.*)$/m)
+    const message: string = match ? match[1] : cleanMessage
 
-    const severityTitle = severity.toString()[0].toUpperCase() + severity.toString().slice(1)
-    const filenameTitle = filename ? ` @ ${filename.replace(path.resolve('.'), '')}` : undefined
-    const title = `${severityTitle}${filenameTitle}`
+    const severityTitle: string = severity.toString()[0].toUpperCase() + severity.toString().slice(1)
+    const filenameTitle: string = filename ? ` @ ${filename.replace(path.resolve('.'), '')}` : ''
+    const title: string = `${severityTitle}${filenameTitle}`
 
-    notifier.notify({
+    nodeNotifier.notify({
       title,
       message,
       icon: path.join(__dirname, '../logo.png')
@@ -50,10 +43,11 @@ function createNotifierCallback() {
   }
 }
 
-const webpackConfig = merge(baseWebpackConfig, {
+// tslint:disable-next-line:export-name
+export const developmentWebpackConfiguration: Configuration = webpackMerge(baseWebpackConfiguration, {
   module: {
     rules: generateStyleLoaders({
-      sourceMap: config.dev.cssSourceMap,
+      sourceMap: APPLICATION_CONFIGURATION.dev.cssSourceMap,
       usePostCSS: true
     })
   },
@@ -61,12 +55,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     app: ['./build/client-polyfill.js', './src/main.ts']
   },
   // cheap-module-eval-source-map is faster for development
-  devtool: config.dev.devtool,
+  devtool: APPLICATION_CONFIGURATION.dev.devtool,
 
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
-      'process.env': devEnv
+      'process.env': DEVELOPMENT_ENVIRONMENT
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
@@ -81,20 +75,18 @@ const webpackConfig = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../../static'),
-        to: config.dev.assetsSubDirectory,
+        to: APPLICATION_CONFIGURATION.dev.assetsSubDirectory,
         ignore: ['.*']
       }
     ]),
-    new FriendlyErrorsPlugin({
+    new FriendlyErrorsWebpackPlugin({
       compilationSuccessInfo: {
         messages: [`Your application is running here: ${URI}`],
         notes: []
       },
-      onErrors: config.dev.notifyOnErrors
+      onErrors: APPLICATION_CONFIGURATION.dev.notifyOnErrors
         ? createNotifierCallback()
         : undefined
     })
   ]
 })
-
-export default webpackConfig

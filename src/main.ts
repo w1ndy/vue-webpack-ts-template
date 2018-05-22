@@ -5,11 +5,12 @@ Vue.use(VueResource)
 
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import { store } from './store'
 
 Vue.config.productionTip =
   process.env.NODE_ENV === 'production' ? true : false
 
+// tslint:disable-next-line:no-unused-expression
 new Vue({
   el: '#app',
   router,

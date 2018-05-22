@@ -4,54 +4,54 @@ import { Options } from 'webpack'
 
 interface IApplicationConfiguration {
   server: {
-    logStyle?: string,
+    logStyle?: string
     session: {
-      secret: string,
+      secret: string
       maxAge: number
     }
   },
   dev: {
     // Paths
-    assetsSubDirectory: string,
-    assetsPublicPath: string,
+    assetsSubDirectory: string
+    assetsPublicPath: string
 
     // Various Dev Server settings
-    host: string, // can be overwritten by process.env.HOST
-    port: number, // can be overwritten by process.env.PORT
-    errorOverlay: boolean,
-    notifyOnErrors: boolean,
+    host: string // can be overwritten by process.env.HOST
+    port: number // can be overwritten by process.env.PORT
+    errorOverlay: boolean
+    notifyOnErrors: boolean
 
     /**
      * Source Maps
      */
 
     // https://webpack.js.org/configuration/devtool/#development
-    devtool: Options.Devtool,
+    devtool: Options.Devtool
 
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
-    cacheBusting: boolean,
+    cacheBusting: boolean
 
     cssSourceMap: true
   },
   build: {
     // Template for index.html
-    index: string,
+    index: string
 
     // Paths
-    assetsRoot: string,
-    assetsSubDirectory: string,
-    assetsPublicPath: string,
+    assetsRoot: string
+    assetsSubDirectory: string
+    assetsPublicPath: string
 
     /**
      * Source Maps
      */
 
-    productionSourceMap: boolean,
+    productionSourceMap: boolean
 
     // https://webpack.js.org/configuration/devtool/#production
-    devtool: Options.Devtool,
+    devtool: Options.Devtool
 
     // Run the build command with an extra argument to
     // View the bundle analyzer report after build finishes:
@@ -61,12 +61,12 @@ interface IApplicationConfiguration {
   }
 }
 
-const appConfig: IApplicationConfiguration = {
+export const APPLICATION_CONFIGURATION: IApplicationConfiguration = {
   server: {
     logStyle: 'dev',
     session: {
       secret: 'wowsuchsecret',
-      maxAge: 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000
     }
   },
   dev: {
@@ -91,10 +91,10 @@ const appConfig: IApplicationConfiguration = {
   }
 }
 
-export const Host = process.env.HOST || appConfig.dev.host
-export const Port: number = process.env.PORT
-  ? parseInt(process.env.PORT)
-  : appConfig.dev.port
-export const URI = `http://${Host}:${Port}`
+export const HOST: string = process.env.HOST || APPLICATION_CONFIGURATION.dev.host
+export const PORT: number = process.env.PORT
+  ? parseInt(process.env.PORT, 10)
+  : APPLICATION_CONFIGURATION.dev.port
 
-export default appConfig
+/* tslint:disable:no-http-string */
+export const URI: string = `http://${HOST}:${PORT}`

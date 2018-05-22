@@ -1,11 +1,11 @@
-import { VuexMutations } from 'vuex'
-import { IExampleStoreState } from './State'
-import Mutations from './MutationTypes'
+import { IMutationHandlers } from 'vuex'
 
-const mutations: VuexMutations<IExampleStoreState> = {
-  [Mutations.SET_MESSAGE] (state, message: string) {
+import { MUTATIONS } from './MutationTypes'
+import { IExampleStoreState } from './State'
+
+// tslint:disable:function-name
+export const mutations: IMutationHandlers<IExampleStoreState> = {
+  [MUTATIONS.SET_MESSAGE] (state: IExampleStoreState, message: string): void {
     state.message = message
   }
 }
-
-export default mutations
