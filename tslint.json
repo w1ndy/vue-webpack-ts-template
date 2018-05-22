@@ -5,5 +5,11 @@
   "rules": {
     "missing-jsdoc": false,
     "no-relative-imports": false,
+    "semicolon": false,
+    "no-implicit-dependencies": [true, "dev"],
+    "type-literal-delimiter": false,
+    "import-name": false,
+    "export-name": false,
+    "no-console": false
   }
 }
