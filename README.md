@@ -6,11 +6,11 @@
 
 This template features:
 
-* [x] Pure TypeScript
-* [x] Typed and RESTful API with Express
-* [x] Webpack
-* [x] Vue.js
-* [x] Vuex (partial typing support)
+* [x] Pure TypeScript linted with TSLint
+* [x] Typed Backend API with Express
+* [x] Webpack 4
+* [x] Vue 2
+* [x] Typed Vuex (Partially)
 
 ## Usage
 
@@ -27,3 +27,5 @@ For production:
 $ npm run build
 $ npm start
 ```
+
+**Note:** Vetur and TSLint Vue extensions are recommended to use with VS Code.
