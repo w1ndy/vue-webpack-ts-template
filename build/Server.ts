@@ -1,3 +1,4 @@
+// tslint:disable:match-default-export-name
 import * as path from 'path'
 
 import express, { Express, Handler } from 'express'
@@ -21,7 +22,7 @@ import { serverRouter } from '../src/server'
 
 const app: Express = ((): Express => {
   const expressApp: Express = express()
-  if (APPLICATION_CONFIGURATION.server.logStyle) {
+  if (!!APPLICATION_CONFIGURATION.server.logStyle) {
     expressApp.use(morgan(APPLICATION_CONFIGURATION.server.logStyle))
   }
   expressApp.use(compression())
@@ -41,9 +42,11 @@ const app: Express = ((): Express => {
 if (process.env.NODE_ENV !== 'production') {
   ((): void => {
     const compiler: Compiler = webpack(developmentWebpackConfiguration)
-    const publicPath: string =
-      (developmentWebpackConfiguration.output && developmentWebpackConfiguration.output.publicPath) ||
-      '/'
+    const publicPath: string = !!developmentWebpackConfiguration.output
+      ? (!!developmentWebpackConfiguration.output.publicPath
+        ? developmentWebpackConfiguration.output.publicPath
+        : '/')
+      : '/'
 
     const devMiddleware: WebpackDevMiddleware & Handler = webpackDevMiddleware(compiler, {
       publicPath,

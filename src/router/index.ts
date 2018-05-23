@@ -1,6 +1,5 @@
+// tslint:disable:match-default-export-name
 import Vue from 'vue'
-
-// tslint:disable-next-line:match-default-export-name
 import Router from 'vue-router'
 
 import HelloWorld from '../components/HelloWorld.vue'

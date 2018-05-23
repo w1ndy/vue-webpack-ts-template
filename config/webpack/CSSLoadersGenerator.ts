@@ -1,6 +1,6 @@
 import * as path from 'path'
 
-import miniCssExtractPlugin from 'mini-css-extract-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Loader } from 'webpack'
 
 export interface ICSSLoadersGeneratorOptions {
@@ -55,7 +55,7 @@ export function generateCSSLoaders(options: ICSSLoadersGeneratorOptions): ICSSLo
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
-      return miniCssExtractPlugin.loader
+      return MiniCssExtractPlugin.loader
     } else {
       return (<Loader[]>['vue-style-loader']).concat(loaders)
     }

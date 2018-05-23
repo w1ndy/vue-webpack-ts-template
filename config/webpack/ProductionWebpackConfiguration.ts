@@ -3,11 +3,11 @@ import * as path from 'path'
 import webpack, { Configuration } from 'webpack'
 import webpackMerge from 'webpack-merge'
 
-import CopyWebpackPlugin from 'copy-webpack-plugin'
+import copyWebpackPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import OptimizeCssAssetsWebpackPlugin from 'optimize-css-assets-webpack-plugin'
-import UglifyJsWebpackPlugin from 'uglifyjs-webpack-plugin'
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 import webpackBundleAnalyzer, { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 import { APPLICATION_CONFIGURATION } from '../ApplicationConfiguration'
@@ -34,7 +34,7 @@ export const productionWebpackConfiguration: Configuration = webpackMerge(baseWe
   },
   optimization: {
     minimizer: [
-      new UglifyJsWebpackPlugin({
+      new UglifyJsPlugin({
         uglifyOptions: {
           compress: {
             warnings: false
@@ -43,7 +43,7 @@ export const productionWebpackConfiguration: Configuration = webpackMerge(baseWe
         sourceMap: APPLICATION_CONFIGURATION.build.productionSourceMap,
         parallel: true
       }),
-      new OptimizeCssAssetsWebpackPlugin({
+      new OptimizeCssAssetsPlugin({
         cssProcessorOptions: APPLICATION_CONFIGURATION.build.productionSourceMap
           ? { safe: true, map: { inline: false } }
           : { safe: true }
@@ -83,7 +83,7 @@ export const productionWebpackConfiguration: Configuration = webpackMerge(baseWe
     new webpack.HashedModuleIdsPlugin(),
 
     // copy custom static assets
-    new CopyWebpackPlugin([
+    new copyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../../static'),
         to: APPLICATION_CONFIGURATION.build.assetsSubDirectory,

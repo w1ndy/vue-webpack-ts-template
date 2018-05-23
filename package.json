@@ -7,7 +7,10 @@
     "start": "npm start prod",
     "dev": "nodemon build/main.js serve",
     "prod": "node build/main.js prod",
-    "build": "node build/main.js build"
+    "build": "node build/main.js build",
+    "lint": "npm-run-parallel lint-server lint-client",
+    "lint-server": "tslint --project ./tsconfig.server.json",
+    "lint-client": "tslint --project ./tsconfig.json"
   },
   "nodemonConfig": {
     "watch": [
@@ -52,6 +55,7 @@
     "express": "^4.16.3",
     "fork-ts-checker-webpack-plugin": "^0.4.1",
     "morgan": "^1.9.0",
+    "npm-run-parallel": "^0.6.0",
     "source-map-support": "^0.5.6",
     "ts-loader": "^4.3.0",
     "ts-node": "^6.0.3",

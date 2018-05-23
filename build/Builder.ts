@@ -1,3 +1,4 @@
+// tslint:disable:match-default-export-name
 process.env.NODE_ENV = 'production'
 
 import * as path from 'path'
@@ -18,12 +19,12 @@ rm(
   path.join(
     APPLICATION_CONFIGURATION.build.assetsRoot,
     APPLICATION_CONFIGURATION.build.assetsSubDirectory),
-  (e: Error): void => {
+  (e: Error | undefined): void => {
     if (e) {
       throw e
     }
 
-    webpack(productionWebpackConfiguration, (err: Error, stats: Stats) => {
+    webpack(productionWebpackConfiguration, (err: Error | undefined, stats: Stats) => {
       spinner.stop()
       if (err) {
         throw err

@@ -6,7 +6,7 @@ import nodeNotifier from 'node-notifier'
 import webpack, { Configuration } from 'webpack'
 import webpackMerge from 'webpack-merge'
 
-import CopyWebpackPlugin from 'copy-webpack-plugin'
+import copyWebpackPlugin from 'copy-webpack-plugin'
 import FriendlyErrorsWebpackPlugin, { Severity, WebpackError } from 'friendly-errors-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
@@ -72,7 +72,7 @@ export const developmentWebpackConfiguration: Configuration = webpackMerge(baseW
       inject: true
     }),
     // copy custom static assets
-    new CopyWebpackPlugin([
+    new copyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../../static'),
         to: APPLICATION_CONFIGURATION.dev.assetsSubDirectory,

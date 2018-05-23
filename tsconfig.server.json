@@ -12,6 +12,9 @@
     "noImplicitAny": true
   },
   "include": [
-    "./src/**/*"
+    "./build/**/*",
+    "./config/**/*",
+    "./src/server/**/*",
+    "./src/typings/**/*"
   ]
 }

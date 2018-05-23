@@ -3,6 +3,7 @@ import VueResource from 'vue-resource'
 
 Vue.use(VueResource)
 
+// tslint:disable-next-line:match-default-export-name
 import App from './App.vue'
 import router from './router'
 import { store } from './store'
