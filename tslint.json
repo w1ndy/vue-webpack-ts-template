@@ -9,7 +9,21 @@
     "no-implicit-dependencies": [true, "dev"],
     "type-literal-delimiter": false,
     "import-name": false,
+    "no-submodule-imports": [
+      true,
+      "vuex-class/lib/bindings",
+      "webpack/node_modules/@types/tapable",
+      "vue-loader/lib"
+    ],
     "export-name": false,
-    "no-console": false
+    "no-default-export": false,
+    "no-console": false,
+    "await-promise": [true, "PromiseLike"],
+    "completed-docs": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
   }
 }

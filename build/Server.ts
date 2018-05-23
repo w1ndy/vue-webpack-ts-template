@@ -12,7 +12,6 @@ import webpack, { compilation, Compiler } from 'webpack'
 import webpackDevMiddleware, { WebpackDevMiddleware } from 'webpack-dev-middleware'
 import webpackHotMiddleware, { EventStream } from 'webpack-hot-middleware'
 
-// tslint:disable-next-line:no-submodule-imports
 import { AsyncSeriesHook } from 'webpack/node_modules/@types/tapable'
 
 import { APPLICATION_CONFIGURATION, HOST, PORT, URI } from '../config/ApplicationConfiguration'

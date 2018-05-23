@@ -1,6 +1,5 @@
 import * as path from 'path'
 
-// tslint:disable-next-line:no-submodule-imports
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import { VueLoaderPlugin } from 'vue-loader/lib'
 import { Configuration } from 'webpack'
@@ -82,7 +81,8 @@ export const baseWebpackConfiguration: Configuration = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          appendTsSuffixTo: [/\.vue$/]
+          appendTsSuffixTo: [/\.vue$/],
+          transpileOnly: true
         }
       },
       {

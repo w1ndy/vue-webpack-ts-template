@@ -84,17 +84,18 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator"
-import { Getter, Action, namespace } from 'vuex-class'
+import { Component, Vue } from 'vue-property-decorator'
+import { Action, Getter, namespace } from 'vuex-class'
+import { BindingHelpers } from 'vuex-class/lib/bindings'
 
-const ExampleStore = namespace('Example');
+const exampleStore: BindingHelpers = namespace('Example')
 
 @Component
 export default class HelloWorld extends Vue {
-  @ExampleStore.Getter welcomeMessage!: string
-  @ExampleStore.Action setWelcomeMessage!: (msg: string) => void
+  @exampleStore.Getter public welcomeMessage!: string
+  @exampleStore.Action private setWelcomeMessage!: (msg: string) => void
 
-  public mounted () {
+  public mounted (): void {
     this.setWelcomeMessage('Hello from vue-webpack-ts-template!')
   }
 }

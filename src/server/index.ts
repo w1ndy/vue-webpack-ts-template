@@ -1,6 +1,5 @@
+// tslint:disable-next-line:match-default-export-name
 import express, { Request, Response, Router } from 'express'
-
-// tslint:disable-next-line:export-name
 export const serverRouter: Router = express.Router()
 
 // tslint:disable-next-line:no-implicit-dependencies
