@@ -61,11 +61,11 @@ if (process.env.NODE_ENV !== 'production') {
     compiler.hooks.compilation.tap(
       'webpackReloadAfterTemplateChanged',
       (compInst: compilation.Compilation) => {
-        // tslint:disable-next-line:no-any
+        // tslint:disable-next-line:no-any no-unsafe-any
         (<AsyncSeriesHook<any, () => void>>(<any>compInst.hooks).htmlWebpackPluginAfterEmit)
         .tapAsync(
           'reloadAfterTemplateChanged',
-          // tslint:disable-next-line:no-any
+          // tslint:disable-next-line:no-any no-unsafe-any
           (data: any, cb: () => void) => {
             console.log('Reloading html template...')
             hotMiddleware.publish({ action: 'reload' })
