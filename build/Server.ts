@@ -13,7 +13,7 @@ import webpack, { compilation, Compiler } from 'webpack'
 import webpackDevMiddleware, { WebpackDevMiddleware } from 'webpack-dev-middleware'
 import webpackHotMiddleware, { EventStream } from 'webpack-hot-middleware'
 
-import { AsyncSeriesHook } from 'webpack/node_modules/@types/tapable'
+import { AsyncSeriesHook } from 'tapable'
 
 import { APPLICATION_CONFIGURATION, HOST, PORT, URI } from '../config/ApplicationConfiguration'
 import { developmentWebpackConfiguration } from '../config/webpack/DevelopmentWebpackConfiguration'
