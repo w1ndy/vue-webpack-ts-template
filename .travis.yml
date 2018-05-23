@@ -1,2 +1,2 @@
 install: npm install
-script: npm run lint
+script: npm run test

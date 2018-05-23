@@ -80,6 +80,13 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(hotMiddleware)
 
     console.log('> Starting dev server...')
+
+    devMiddleware.waitUntilValid(() => {
+      if (!!process.env.SERVE_TEST) {
+        console.log(' > Serve-test completed successfully.')
+        process.exit(0)
+      }
+    })
   })()
 
   // serve pure static assets

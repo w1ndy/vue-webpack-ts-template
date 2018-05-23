@@ -87,6 +87,10 @@ switch (process.argv[2]) {
   case 'serve':
     require('./Server.ts')
     break
+  case 'serve-test':
+    process.env.SERVE_TEST = '1'
+    require('./Server.ts')
+    break
   default:
     console.log('node build/main.js serve|build|prod')
 }

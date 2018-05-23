@@ -4,13 +4,14 @@
   "description": "Vue.js + Webpack + TypeScript",
   "author": "Di Weng <wengdi@jd.com>",
   "scripts": {
-    "start": "npm start prod",
+    "start": "npm run prod",
     "dev": "nodemon build/main.js serve",
     "prod": "node build/main.js prod",
     "build": "node build/main.js build",
     "lint": "npm-run-parallel lint-server lint-client",
     "lint-server": "tslint --project ./tsconfig.server.json",
-    "lint-client": "tslint --project ./tsconfig.json"
+    "lint-client": "tslint --project ./tsconfig.json",
+    "test": "npm run lint && node build/main.js serve-test"
   },
   "nodemonConfig": {
     "watch": [
