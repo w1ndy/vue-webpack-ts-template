@@ -58,22 +58,22 @@ if (process.env.NODE_ENV !== 'production') {
     })
 
     // force page reload when html-webpack-plugin template changes
-    compiler.hooks.compilation.tap(
-      'webpackReloadAfterTemplateChanged',
-      (compInst: compilation.Compilation) => {
-        // tslint:disable-next-line:no-any no-unsafe-any
-        (<AsyncSeriesHook<any, () => void>>(<any>compInst.hooks).htmlWebpackPluginAfterEmit)
-        .tapAsync(
-          'reloadAfterTemplateChanged',
-          // tslint:disable-next-line:no-any no-unsafe-any
-          (data: any, cb: () => void) => {
-            console.log('Reloading html template...')
-            hotMiddleware.publish({ action: 'reload' })
-            cb()
-          }
-        )
-      }
-    )
+    // compiler.hooks.compilation.tap(
+    //   'webpackReloadAfterTemplateChanged',
+    //   (compInst: compilation.Compilation) => {
+    //     // tslint:disable-next-line:no-any no-unsafe-any
+    //     (<AsyncSeriesHook<any, () => void>>(<any>compInst.hooks).htmlWebpackPluginAfterEmit)
+    //     .tapAsync(
+    //       'reloadAfterTemplateChanged',
+    //       // tslint:disable-next-line:no-any no-unsafe-any
+    //       (data: any, cb: () => void) => {
+    //         console.log('Reloading html template...')
+    //         hotMiddleware.publish({ action: 'reload' })
+    //         cb()
+    //       }
+    //     )
+    //   }
+    // )
 
     // serve webpack bundle output
     app.use(devMiddleware)
