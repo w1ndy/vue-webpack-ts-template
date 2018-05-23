@@ -1,5 +1,7 @@
 # vue-webpack-ts-template
 
+[![dependencies](https://david-dm.org/w1ndy/vue-webpack-ts-template.svg)](https://david-dm.org/w1ndy/vue-webpack-ts-template)
+
 > A pure-TypeScript full-stack template for Web development adapted from [vuejs-template/webpack](https://github.com/vuejs-templates/webpack)
 
 > ⚠️ This template is under development
