@@ -55,7 +55,7 @@ export function generateCSSLoaders(options: ICSSLoadersGeneratorOptions): ICSSLo
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
-      return (<Loader[]>[MiniCssExtractPlugin.loader]).concat(loaders)
+      return [MiniCssExtractPlugin.loader].concat(loaders)
     } else {
       return (<Loader[]>['vue-style-loader']).concat(loaders)
     }
