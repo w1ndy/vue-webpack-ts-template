@@ -58,10 +58,6 @@ export const baseWebpackConfiguration: Configuration = {
   },
   module: {
     rules: [
-      ...generateStyleLoaders({
-        sourceMap: sourceMapEnabled,
-        extract: isProduction
-      }),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
