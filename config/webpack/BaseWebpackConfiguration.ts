@@ -53,9 +53,6 @@ export const baseWebpackConfiguration: Configuration = {
       '@': resolve('src')
     }
   },
-  devServer: {
-    historyApiFallback: true
-  },
   module: {
     rules: [
       {
