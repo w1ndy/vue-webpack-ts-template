@@ -13,20 +13,22 @@ process.on('uncaughtException', error => {
   const oldStack = error.stack
 
   function printFormattedTSError ({ file, line, col, reason, msgs }) {
-    console.log(`${chalk.bgRed.bold(` ${error.name} `)}${chalk.yellow.bold(` ${file} `)}${reason}`)
+    console.log(`${chalk.bgRed.bold(` ${error.name} `)}${file && file.length && chalk.yellow.bold(` ${file}`)} ${reason}`)
     for (let msg of msgs) {
       console.log(`  ${chalk.gray(msg)}`)
     }
     console.log()
 
-    error.stack = oldStack.replace(
-      /^    at/m,
-      `    at __unnamed_func (${file}:${line}:${col})\n    at`
-    )
+    if (file && file.length) {
+      error.stack = oldStack.replace(
+        /^    at/m,
+        `    at ${file}:${line}:${col}\n    at`
+      )
 
-    const record = createCallsiteRecord({ forError: error })
-    if (record) {
-      console.log(record.renderSync({}))
+      const record = createCallsiteRecord({ forError: error })
+      if (record) {
+        console.log(record.renderSync({}))
+      }
     }
     console.log()
   }
@@ -38,7 +40,11 @@ process.on('uncaughtException', error => {
 
     let lastError = null
     for (let msg of errorMsgs) {
-      const match = msg.match(/^(.*) \((\d+),(\d+)\): (.*)$/)
+      if (msg.length === 0) {
+        continue
+      }
+
+      const match = msg.match(/^(.*)\((\d+),(\d+)\): (.*)$/) || msg.match(/^()()()(.*)$/)
       if (match) {
         if (lastError) printFormattedTSError(lastError)
 
@@ -54,7 +60,7 @@ process.on('uncaughtException', error => {
           lastError.msgs.push(msg)
         } else {
           lastError = {
-            file: 'VM',
+            file: '',
             line: 1,
             col: 1,
             reason: 'Unknown error',

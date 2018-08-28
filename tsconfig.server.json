@@ -9,7 +9,11 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/typings"
+    ]
   },
   "include": [
     "./build/**/*",
